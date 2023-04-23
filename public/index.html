@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+        span {
+            border: 1px solid black;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2 class="question"></h2>
+    <div class="answers">
+        <p class="ans1 ans"></p>
+        <p class="ans2 ans"></p>
+        <p class="ans3 ans"></p>
+        <p class="ans4 ans"></p>
+        <span class="prev">Prev</span><span class="next">Next</span>
+
+        <span class="chk">Check Answer</span>
+    </div>
+
+    <script>
+
+        fetch('https://ll_clone/questions')
+            .then((res) => {
+                return res.json()
+            })
+            .then((data) => {
+                console.log(data)
+                const questions = data.questions;
+                console.log(questions)
+                console.log(data.questions.length)
+                console.log(data.questions[0])
+
+                var counter = 0;
+                var noOfAttempts = 1;
+                var score = 10;
+
+                writeQuestion();
+
+
+                function writeQuestion() {
+                    document.querySelector('.question').innerHTML = questions[counter].question;
+                    document.querySelector('.ans1').innerHTML = questions[counter].answer1;
+                    document.querySelector('.ans2').innerHTML = questions[counter].answer2;
+                    document.querySelector('.ans3').innerHTML = questions[counter].answer3;
+                    document.querySelector('.ans4').innerHTML = questions[counter].answer4;
+                }
+
+
+                document.querySelector('.prev').addEventListener('click', function () {
+                    if (counter <= 0) {
+                        //counter = questions.length-1;
+                        alert('you have reached the start of quiz')
+                    } else {
+                        counter--;
+                    }
+
+                    document.querySelector('.question').innerHTML = questions[counter].question;
+                    document.querySelector('.ans1').innerHTML = questions[counter].answer1;
+                    document.querySelector('.ans2').innerHTML = questions[counter].answer2;
+                    document.querySelector('.ans3').innerHTML = questions[counter].answer3;
+                    document.querySelector('.ans4').innerHTML = questions[counter].answer4;
+
+                })
+
+                document.querySelector('.next').addEventListener('click', function () {
+                    //counter++; 
+
+                    if (counter >= questions.length - 1) {
+                        //counter = 0; 
+                        alert(`you have reached the end of quiz, your score is ${score} in ${noOfAttempts} attempts`)
+
+                    } else {
+                        counter++;
+                    }
+
+                    document.querySelector('.question').innerHTML = questions[counter].question;
+                    document.querySelector('.ans1').innerHTML = questions[counter].answer1;
+                    document.querySelector('.ans2').innerHTML = questions[counter].answer2;
+                    document.querySelector('.ans3').innerHTML = questions[counter].answer3;
+                    document.querySelector('.ans4').innerHTML = questions[counter].answer4;
+
+                })
+
+
+                document.querySelectorAll('.ans').forEach((a) => {
+                    a.addEventListener('click', function (e) {
+                        console.log(e.target.innerText)
+                        checkAnswer(e.target.innerText)
+                    })
+                })
+
+                function checkAnswer(val) {
+                    console.log(val)
+                    //console.log(questions[counter])
+                    var question = questions[counter];
+                    console.log(question.correctAns)
+
+
+                    if (val == question.correctAns) {
+                        alert('correct ans')
+                        counter++;
+                        score = score + 10;
+                        noOfAttempts++;
+                        nextQuestion(counter)
+                    } else {
+                        if (noOfAttempts > 3) {
+                            alert('you have reached the limit, move to next question')
+                            return;
+                        }
+                        alert('wrong ans, try again')
+                        noOfAttempts++;
+
+                    }
+                }
+
+
+                function nextQuestion(counter) {
+                    alert('moving to next question')
+
+                    document.querySelector('.question').innerHTML = questions[counter].question;
+                    document.querySelector('.ans1').innerHTML = questions[counter].answer1;
+                    document.querySelector('.ans2').innerHTML = questions[counter].answer2;
+                    document.querySelector('.ans3').innerHTML = questions[counter].answer3;
+                    document.querySelector('.ans4').innerHTML = questions[counter].answer4;
+
+                    /*
+                    if (counter > questions.length-1) {
+                        alert('you have reached the end of quiz, your score is...')
+                        
+                    }
+                    */
+
+                }
+
+
+
+
+            })
+
+
+
+
+
+
+    </script>
+</body>
+</html>
